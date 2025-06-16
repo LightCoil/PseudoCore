@@ -21,7 +21,7 @@ This is a **prototype** implementation. While significant efforts have been made
 - Hard-coded parameters that may not be optimal for all use cases.
 - Limited testing under diverse workloads.
 
-We are actively working on resolving these issues and welcome community contributions to enhance the system.
+I am actively working on resolving these issues and welcome community contributions to enhance the system.
 
 ## Installation
 
