@@ -21,8 +21,6 @@ This is a **prototype** implementation. While significant efforts have been made
 - Hard-coded parameters that may not be optimal for all use cases.
 - Limited testing under diverse workloads.
 
-I am actively working on resolving these issues and welcome community contributions to enhance the system.
-
 ## Installation
 
 ### Prerequisites
@@ -102,9 +100,5 @@ We welcome contributions to improve PseudoCore! Please follow these steps:
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
-For questions, suggestions, or issues, please open an issue on GitHub or contact the maintainers at [your-email@example.com](mailto:your-email@example.com).
-
 ---
 
-*PseudoCore is a work in progress. Your feedback is invaluable in shaping its future!*
