@@ -35,7 +35,7 @@ We are actively working on resolving these issues and welcome community contribu
 ### Build Instructions
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/pseudocore.git
+   git clone https://github.com/lightcoil/pseudocore.git
    cd pseudocore
    ```
 2. Build the project using the provided Makefile:
