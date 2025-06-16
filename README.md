@@ -100,7 +100,7 @@ We welcome contributions to improve PseudoCore! Please follow these steps:
 - Write unit tests for new functionality when possible.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 For questions, suggestions, or issues, please open an issue on GitHub or contact the maintainers at [your-email@example.com](mailto:your-email@example.com).
