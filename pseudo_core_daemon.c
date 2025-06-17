@@ -9,6 +9,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <time.h>
+#include <stdint.h>
 
 #include "config.h"
 #include "cache.h"
@@ -16,9 +17,11 @@
 #include "ring_cache.h"
 #include "scheduler.h"
 
-// Конфигурация с пониженной нагрузкой
-#define CORES 2  // Уменьшаем количество ядер
-#define SEGMENT_MB 64  // Уменьшаем размер сегмента
+// Конфигурация демона
+#undef CORES
+#undef SEGMENT_MB
+#define DAEMON_CORES 2  // Уменьшаем количество ядер
+#define DAEMON_SEGMENT_MB 64  // Уменьшаем размер сегмента
 #define BLOCK_SIZE 4096
 #define LOAD_THRESHOLD 30
 #define HIGH_LOAD_DELAY_NS 50000000  // 50ms
@@ -27,9 +30,17 @@
 #define PID_FILE "/var/run/pseudo_core.pid"
 #define LOG_FILE "/var/log/pseudo_core.log"
 
+// Определяем структуру аргументов для потока
+typedef struct {
+    int id;               // ID ядра
+    int fd;               // Файловый дескриптор для операций I/O
+    uint64_t seg_size;    // Размер сегмента для выбора блока
+    volatile int running; // Флаг для контроля завершения потока
+} daemon_core_arg_t;
+
 volatile int global_running = 1;
-static pthread_t core_threads[CORES];
-static core_arg_t core_args[CORES];
+static pthread_t core_threads[DAEMON_CORES];
+static daemon_core_arg_t core_args[DAEMON_CORES];
 static pthread_mutex_t stats_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void signal_handler(int sig) {
@@ -38,7 +49,7 @@ void signal_handler(int sig) {
         global_running = 0;
         
         // Ждем завершения всех потоков
-        for (int i = 0; i < CORES; i++) {
+        for (int i = 0; i < DAEMON_CORES; i++) {
             core_args[i].running = 0;
             pthread_join(core_threads[i], NULL);
         }
@@ -85,14 +96,14 @@ void daemonize(void) {
 }
 
 void* core_run(void *v) {
-    core_arg_t *c = v;
+    daemon_core_arg_t *c = (daemon_core_arg_t*)v;
     cache_t cache;
     cache_init(&cache);
     ring_cache_init();
 
     while (c->running && global_running) {
         // Основная логика обработки с увеличенными задержками
-        static uint64_t pos[CORES] = {0};
+        static uint64_t pos[DAEMON_CORES] = {0};
         uint64_t idx = pos[c->id]++;
         uint64_t offset = (uint64_t)c->id * c->seg_size + 
                          (idx % (c->seg_size / BLOCK_SIZE)) * BLOCK_SIZE;
@@ -148,10 +159,10 @@ int main(void) {
     }
 
     // Запускаем потоки обработки
-    for (int i = 0; i < CORES; i++) {
+    for (int i = 0; i < DAEMON_CORES; i++) {
         core_args[i].id = i;
         core_args[i].fd = fd;
-        core_args[i].seg_size = SEGMENT_MB * 1024 * 1024;
+        core_args[i].seg_size = DAEMON_SEGMENT_MB * 1024 * 1024;
         core_args[i].running = 1;
 
         if (pthread_create(&core_threads[i], NULL, core_run, &core_args[i]) != 0) {
