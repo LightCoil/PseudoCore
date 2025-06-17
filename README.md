@@ -1,6 +1,5 @@
 # PseudoCore - High-Performance Data Management Prototype
 
-![PseudoCore Logo](https://via.placeholder.com/150?text=PseudoCore)
 
 **Note: This project is a prototype and still under active development. There are known issues and limitations that are being addressed. Contributions and feedback are welcome!**
 
