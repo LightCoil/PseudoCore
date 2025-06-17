@@ -69,6 +69,10 @@ or
 
 ### Stopping the Application
 - Press `Ctrl+C` to send a termination signal (`SIGINT`). The application handles this gracefully by shutting down threads and cleaning up resources.
+- For daemon
+-  ```bash
+   sudo kill $(cat /var/run/pseudo_core.pid)
+   ```
 
 ## Project Structure
 - **anticipator.h**: Predictive data fetching logic.
