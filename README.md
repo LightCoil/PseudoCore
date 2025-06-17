@@ -1,8 +1,6 @@
 # PseudoCore - High-Performance Data Management Prototype
 
 
-**Note: This project is a prototype and still under active development. There are known issues and limitations that are being addressed. Contributions and feedback are welcome!**
-
 ## Overview
 
 PseudoCore is a high-performance data management system designed to optimize data access, caching, and task scheduling at the block level. It aims to emulate core-level operations with a focus on multi-threading, data compression, and predictive data fetching. This system can be used in scenarios requiring efficient data handling, such as storage systems, virtualization, or I/O optimization.
@@ -21,7 +19,6 @@ This is a **prototype** implementation. While significant efforts have been made
 - Hard-coded parameters that may not be optimal for all use cases.
 - Limited testing under diverse workloads.
 
-We are actively working on resolving these issues and welcome community contributions to enhance the system.
 
 ## Installation
 
@@ -35,7 +32,7 @@ We are actively working on resolving these issues and welcome community contribu
 ### Build Instructions
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/pseudocore.git
+   git clone https://github.com/LightCoil/pseudocore.git
    cd pseudocore
    ```
 2. Build the project using the provided Makefile:
@@ -100,11 +97,6 @@ We welcome contributions to improve PseudoCore! Please follow these steps:
 - Write unit tests for new functionality when possible.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU 3 License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
-For questions, suggestions, or issues, please open an issue on GitHub or contact the maintainers at [your-email@example.com](mailto:your-email@example.com).
 
----
-
-*PseudoCore is a work in progress. Your feedback is invaluable in shaping its future!*
