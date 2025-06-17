@@ -1,0 +1,197 @@
+# PseudoCore v2.0 Test Makefile
+
+# Compiler and flags
+CC = gcc
+CFLAGS = -std=c11 -Wall -Wextra -O2 -g -D_GNU_SOURCE -DTESTING=1
+LDFLAGS = -lpthread -lzstd -lz
+
+# Directories
+SRCDIR = .
+OBJDIR = obj_test
+BINDIR = bin_test
+
+# Source files for tests
+TEST_SOURCES = test_pseudo_core_v2.c \
+               core_entity.c \
+               task_entity.c \
+               block_entity.c \
+               cache_engine.c \
+               compression_engine.c \
+               storage_engine.c \
+               core_manager.c
+
+# Object files
+TEST_OBJECTS = $(TEST_SOURCES:%.c=$(OBJDIR)/%.o)
+
+# Target executable
+TEST_TARGET = $(BINDIR)/test_pseudo_core_v2
+
+# Default target
+all: directories $(TEST_TARGET)
+
+# Create necessary directories
+directories:
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(BINDIR)
+
+# Compile object files
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@echo "Compiling test: $<..."
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+# Link test executable
+$(TEST_TARGET): $(TEST_OBJECTS)
+	@echo "Linking test executable..."
+	@$(CC) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
+	@echo "Test build completed!"
+
+# Run tests
+test: $(TEST_TARGET)
+	@echo "Running PseudoCore v2.0 tests..."
+	@$(TEST_TARGET)
+
+# Run tests with verbose output
+test-verbose: $(TEST_TARGET)
+	@echo "Running PseudoCore v2.0 tests with verbose output..."
+	@$(TEST_TARGET) --verbose
+
+# Run specific test
+test-core: $(TEST_TARGET)
+	@echo "Running Core Entity tests..."
+	@$(TEST_TARGET) --test=core
+
+test-task: $(TEST_TARGET)
+	@echo "Running Task Entity tests..."
+	@$(TEST_TARGET) --test=task
+
+test-block: $(TEST_TARGET)
+	@echo "Running Block Entity tests..."
+	@$(TEST_TARGET) --test=block
+
+test-cache: $(TEST_TARGET)
+	@echo "Running Cache Engine tests..."
+	@$(TEST_TARGET) --test=cache
+
+test-compression: $(TEST_TARGET)
+	@echo "Running Compression Engine tests..."
+	@$(TEST_TARGET) --test=compression
+
+test-storage: $(TEST_TARGET)
+	@echo "Running Storage Engine tests..."
+	@$(TEST_TARGET) --test=storage
+
+test-manager: $(TEST_TARGET)
+	@echo "Running Core Manager tests..."
+	@$(TEST_TARGET) --test=manager
+
+# Run tests with memory checking
+test-memory: CFLAGS += -fsanitize=address -fno-omit-frame-pointer
+test-memory: LDFLAGS += -fsanitize=address
+test-memory: $(TEST_TARGET)
+	@echo "Running tests with memory checking..."
+	@$(TEST_TARGET)
+
+# Run tests with thread checking
+test-thread: CFLAGS += -fsanitize=thread
+test-thread: LDFLAGS += -fsanitize=thread
+test-thread: $(TEST_TARGET)
+	@echo "Running tests with thread checking..."
+	@$(TEST_TARGET)
+
+# Run tests with valgrind
+test-valgrind: $(TEST_TARGET)
+	@echo "Running tests with valgrind..."
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes $(TEST_TARGET)
+
+# Run tests with coverage
+test-coverage: CFLAGS += --coverage
+test-coverage: LDFLAGS += --coverage
+test-coverage: $(TEST_TARGET)
+	@echo "Running tests with coverage..."
+	@$(TEST_TARGET)
+	@gcov $(TEST_SOURCES)
+	@echo "Coverage report generated"
+
+# Clean test artifacts
+clean:
+	@echo "Cleaning test artifacts..."
+	@rm -rf $(OBJDIR) $(BINDIR)
+	@rm -f *.gcov *.gcda *.gcno
+	@rm -f test_storage.img test_manager_storage.img
+	@echo "Test cleanup completed!"
+
+# Install test dependencies
+install-test-deps:
+	@echo "Installing test dependencies..."
+	@sudo apt-get update
+	@sudo apt-get install -y build-essential libzstd-dev zlib1g-dev valgrind gcovr
+	@echo "Test dependencies installed!"
+
+# Generate test report
+test-report: test
+	@echo "Generating test report..."
+	@mkdir -p reports
+	@$(TEST_TARGET) > reports/test_output.txt 2>&1
+	@echo "Test report saved to reports/test_output.txt"
+
+# Run performance tests
+test-performance: $(TEST_TARGET)
+	@echo "Running performance tests..."
+	@$(TEST_TARGET) --performance
+
+# Run stress tests
+test-stress: $(TEST_TARGET)
+	@echo "Running stress tests..."
+	@$(TEST_TARGET) --stress
+
+# Run integration tests
+test-integration: $(TEST_TARGET)
+	@echo "Running integration tests..."
+	@$(TEST_TARGET) --integration
+
+# Help target
+help:
+	@echo "PseudoCore v2.0 Test Suite"
+	@echo "========================="
+	@echo ""
+	@echo "Available test targets:"
+	@echo "  all              - Build test executable (default)"
+	@echo "  test             - Run all tests"
+	@echo "  test-verbose     - Run tests with verbose output"
+	@echo "  test-core        - Run Core Entity tests only"
+	@echo "  test-task        - Run Task Entity tests only"
+	@echo "  test-block       - Run Block Entity tests only"
+	@echo "  test-cache       - Run Cache Engine tests only"
+	@echo "  test-compression - Run Compression Engine tests only"
+	@echo "  test-storage     - Run Storage Engine tests only"
+	@echo "  test-manager     - Run Core Manager tests only"
+	@echo "  test-memory      - Run tests with memory checking"
+	@echo "  test-thread      - Run tests with thread checking"
+	@echo "  test-valgrind    - Run tests with valgrind"
+	@echo "  test-coverage    - Run tests with coverage analysis"
+	@echo "  test-performance - Run performance tests"
+	@echo "  test-stress      - Run stress tests"
+	@echo "  test-integration - Run integration tests"
+	@echo "  test-report      - Generate test report"
+	@echo "  clean            - Clean test artifacts"
+	@echo "  install-test-deps - Install test dependencies"
+	@echo "  help             - Show this help message"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make test                    # Run all tests"
+	@echo "  make test-memory             # Run with memory checking"
+	@echo "  make test-valgrind           # Run with valgrind"
+	@echo "  make test-coverage           # Run with coverage"
+
+# Phony targets
+.PHONY: all test test-verbose test-core test-task test-block test-cache test-compression test-storage test-manager test-memory test-thread test-valgrind test-coverage clean install-test-deps test-report test-performance test-stress test-integration help directories
+
+# Dependencies
+$(OBJDIR)/test_pseudo_core_v2.o: test_pseudo_core_v2.c core_entity.h task_entity.h block_entity.h cache_engine.h compression_engine.h storage_engine.h core_manager.h
+$(OBJDIR)/core_entity.o: core_entity.h
+$(OBJDIR)/task_entity.o: task_entity.h core_entity.h
+$(OBJDIR)/block_entity.o: block_entity.h
+$(OBJDIR)/cache_engine.o: cache_engine.h block_entity.h
+$(OBJDIR)/compression_engine.o: compression_engine.h
+$(OBJDIR)/storage_engine.o: storage_engine.h block_entity.h
+$(OBJDIR)/core_manager.o: core_manager.h core_entity.h task_entity.h cache_engine.h compression_engine.h storage_engine.h 
