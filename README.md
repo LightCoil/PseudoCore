@@ -57,6 +57,10 @@ This is a **prototype** implementation. While significant efforts have been made
    ```bash
    ./pseudo_core
    ```
+or
+ ```bash
+   ./pseudo_core_daemon
+   ```
 3. The system will start multiple threads simulating core operations, performing data access, caching, compression, and scheduling.
 
 ### Monitoring
